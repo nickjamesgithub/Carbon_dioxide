@@ -13,12 +13,12 @@ countries = ["China", "United States", "India", "Russia", "Japan", "Iran", "Germ
              "Argentina", "Algeria",
              "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia",
              "Bangladesh", "Czechia", "Belgium",
-             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria", "Austria", "Greece", "Mongolia",
-             "Israel", "Belarus", "Serbia", "Peru", "Hungary"]
+             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria"]
+# "Greece", "Mongolia", "Israel", "Belarus", "Serbia", "Peru", "Hungary"
 countries.sort()
 
 # Make plots?
-make_plots = False
+make_plots = True
 
 # Optimal model list and parameter list
 params_list = []  # Parameters list
@@ -52,6 +52,7 @@ for i in range(len(countries)):
                 # Plot data and fit
                 plt.plot(x1, results_m.fittedvalues)
                 plt.scatter(x1, y)
+                plt.savefig(countries[i]+"_"+"change_point_"+str(0))
                 plt.show()
 
         if model == 1:
@@ -153,7 +154,8 @@ for i in range(len(countries)):
             r2_2 = cp_ordered[-1][2]
             optimal_model_list.append([countries[i], cpd_1, cpd_2, r2_2])
 
-optimal_model_df = pd.DataFrame(optimal_model_list)
-optimal_model_df.to_csv("/Users/tassjames/Desktop/carbon_dioxide_emissions/optimal_models.csv")
+# # Optimal models Dataframe
+# optimal_model_df = pd.DataFrame(optimal_model_list)
+# optimal_model_df.to_csv("/Users/tassjames/Desktop/carbon_dioxide_emissions/optimal_models.csv")
 
 

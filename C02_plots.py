@@ -4,11 +4,16 @@ import pandas as pd
 
 data = pd.read_csv("/Users/tassjames/Desktop/carbon_dioxide_emissions/owid-co2-data.csv")
 
-countries = ["China", "United States", "India", "Russia", "Japan", "Japan", "Iran", "Germany", "Indonesia", "South Korea", "Saudi Arabia", "Canada",
-             "South Africa", "Brazil", "Mexico", "Australia", "Turkey", "United Kingdom", "Italy", "France", "Poland", "Kazakhstan", "Thailand",
-             "Taiwan", "Spain", "Malaysia", "Pakistan", "Vietnam", "Egypt", "Ukraine", "Iraq", "United Arab Emirates", "Argentina", "Algeria",
-             "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia", "Bangladesh", "Czechia", "Belgium",
-             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria", "Austria", "Greece", "Mongolia", "Israel", "Belarus", "Serbia", "Peru", "Hungary"]
+countries = ["China", "United States", "India", "Russia", "Japan", "Iran", "Germany", "Indonesia", "South Korea",
+             "Saudi Arabia", "Canada",
+             "South Africa", "Brazil", "Mexico", "Australia", "Turkey", "United Kingdom", "Italy", "France", "Poland",
+             "Kazakhstan", "Thailand",
+             "Taiwan", "Spain", "Malaysia", "Pakistan", "Vietnam", "Egypt", "Ukraine", "Iraq", "United Arab Emirates",
+             "Argentina", "Algeria",
+             "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia",
+             "Bangladesh", "Czechia", "Belgium",
+             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria"]
+#
 countries.sort()
 
 # Length

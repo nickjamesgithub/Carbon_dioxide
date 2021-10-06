@@ -5,11 +5,15 @@ from Utilities import dendrogram_plot_labels
 
 data = pd.read_csv("/Users/tassjames/Desktop/carbon_dioxide_emissions/owid-co2-data.csv")
 
-countries = ["China", "United States", "India", "Russia", "Japan", "Japan", "Iran", "Germany", "Indonesia", "South Korea", "Saudi Arabia", "Canada",
-             "South Africa", "Brazil", "Mexico", "Australia", "Turkey", "United Kingdom", "Italy", "France", "Poland", "Kazakhstan", "Thailand",
-             "Taiwan", "Spain", "Malaysia", "Pakistan", "Vietnam", "Egypt", "Ukraine", "Iraq", "United Arab Emirates", "Argentina", "Algeria",
-             "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia", "Bangladesh", "Czechia", "Belgium",
-             "Turkmenistan", "Chile", "Romania", "Morocco"]
+countries = ["China", "United States", "India", "Russia", "Japan", "Iran", "Germany", "Indonesia", "South Korea",
+             "Saudi Arabia", "Canada",
+             "South Africa", "Brazil", "Mexico", "Australia", "Turkey", "United Kingdom", "Italy", "France", "Poland",
+             "Kazakhstan", "Thailand",
+             "Taiwan", "Spain", "Malaysia", "Pakistan", "Vietnam", "Egypt", "Ukraine", "Iraq", "United Arab Emirates",
+             "Argentina", "Algeria",
+             "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia",
+             "Bangladesh", "Czechia", "Belgium",
+             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria"]
 countries.sort()
 # "Oman", "Austria", "Austria", "Greece", "Mongolia", "Israel", "Belarus", "Serbia", "Peru", "Hungary"
 
@@ -69,20 +73,3 @@ for i in range(len(trajectory_matrix_list)):
 
     # Plot dendrogram
     dendrogram_plot_labels(matrix, plot_labels_list[i], "_Trajectory_", labels=countries)
-
-# # Country GDP - country i
-# country_gdp_i = data.loc[(data['country'] == countries[i]) & (counter <= data['year'] < counter+10), "gdp"]
-# # Country Population - country i
-# country_population_i = data.loc[(data['country'] == countries[i]) & (counter <= data['year'] < counter+10), "population"]
-
-# # Country C02 - country j
-# country_c02_j = data.loc[(data['country'] == countries[j]) & (counter <= data['year'] < counter + 10), "co2"]
-# # Country GDP - country j
-# country_gdp_j = data.loc[(data['country'] == countries[j]) & (counter <= data['year'] < counter + 10), "gdp"]
-# # Country Population - country j
-# country_population_j = data.loc[(data['country'] == countries[j]) & (counter <= data['year'] < counter + 10), "population"]
-
-
-
-
-

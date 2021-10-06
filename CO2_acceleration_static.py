@@ -9,9 +9,10 @@ countries = ["China", "United States", "India", "Russia", "Japan", "Iran", "Germ
              "South Africa", "Brazil", "Mexico", "Australia", "Turkey", "United Kingdom", "Italy", "France", "Poland", "Kazakhstan", "Thailand",
              "Taiwan", "Spain", "Malaysia", "Pakistan", "Vietnam", "Egypt", "Ukraine", "Iraq", "United Arab Emirates", "Argentina", "Algeria",
              "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia", "Bangladesh", "Czechia", "Belgium",
-             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria", "Austria", "Greece", "Mongolia", "Israel", "Belarus", "Serbia", "Peru", "Hungary"]
+             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria", "Greece", "Mongolia", "Israel", "Belarus", "Serbia", "Peru", "Hungary"]
 countries.sort()
 
+slope_list = []
 params_list = [] # Parameters list
 for i in range(len(countries)):
 
@@ -30,17 +31,26 @@ for i in range(len(countries)):
     model_m = sm.OLS(y, x1_ones)
     results_m = model_m.fit()
 
-    print(results_m.summary())
+    # print(results_m.summary())
 
     # AIC/BIC/Adjusted R2
     params_m = results_m.params
-    params_list.append([countries[i], params_m])
+    params_int = results_m.params[0]
+    params_slope = results_m.params[1]
+    p_value_slope = results_m.pvalues[1]
+    params_list.append([countries[i], params_int, params_slope, p_value_slope])
 
-    # Plot first differences
-    plt.plot(x1_diff, results_m.fittedvalues, label="OLS")
-    plt.scatter(x1_diff, y, label="data")
-    plt.title("CO2_Acceleration_"+countries[i])
-    plt.legend()
-    plt.savefig("Acceleration_"+countries[i])
-    plt.show()
-    
+    # # Plot first differences
+    # plt.plot(x1_diff, results_m.fittedvalues, label="OLS")
+    # plt.scatter(x1_diff, y, label="data")
+    # plt.title("CO2_Acceleration_"+countries[i])
+    # plt.legend()
+    # plt.savefig("Acceleration_"+countries[i])
+    # plt.show()
+
+# Sort parameter list
+sorted_slopes = sorted(params_list, key = lambda x: x[0])
+print(sorted_slopes)
+# Sorted slope as a dataframe
+sorted_slopes_df = pd.DataFrame(sorted_slopes)
+sorted_slopes_df.to_csv("/Users/tassjames/Desktop/hydrology/acceleration.csv")

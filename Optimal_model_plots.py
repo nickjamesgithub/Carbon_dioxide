@@ -15,8 +15,7 @@ countries = ["China", "United States", "India", "Russia", "Japan", "Iran", "Germ
              "Argentina", "Algeria",
              "Netherlands", "Philippines", "Nigeria", "Venezuela", "Uzbekistan", "Qatar", "Kuwait", "Colombia",
              "Bangladesh", "Czechia", "Belgium",
-             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria", "Austria", "Greece", "Mongolia",
-             "Israel", "Belarus", "Serbia", "Peru", "Hungary"]
+             "Turkmenistan", "Chile", "Romania", "Morocco", "Oman", "Austria"]
 
 countries.sort()
 
@@ -41,10 +40,13 @@ for i in range(len(countries)):
     model_m = sm.OLS(y, x1_ones)
     results_m = model_m.fit()
 
-    # Plot data and fit
-    plt.plot(x1, results_m.fittedvalues)
-    plt.scatter(x1, y)
-    plt.show()
+    # # Plot data and fit
+    # plt.plot(x1, results_m.fittedvalues)
+    # plt.scatter(x1, y, alpha=0.25)
+    # plt.xlabel("Time")
+    # plt.ylabel("Emissions")
+    # plt.savefig("Optimal_" + countries[i] + "_" + "changepoint_" + str(0))
+    # plt.show()
 
     # MODEL 2
     x_grid = np.reshape(np.linspace(1970,2019, len(y)), (len(y),1))
@@ -65,10 +67,12 @@ for i in range(len(countries)):
 
     # Plot data and fit
     plt.plot(x21, results_21.fittedvalues)
-    plt.scatter(x21, y_21)
+    plt.scatter(x21, y_21, alpha=0.25)
     plt.plot(x22, results_22.fittedvalues)
-    plt.scatter(x22, y_22)
+    plt.scatter(x22, y_22, alpha=0.25)
     plt.axvline(x=x_grid[cp21], alpha=0.25)
+    plt.xlabel("Time")
+    plt.ylabel("Emissions")
     plt.savefig("Optimal_"+countries[i]+"_"+"changepoint_"+str(cp21))
     plt.show()
 
@@ -96,15 +100,17 @@ for i in range(len(countries)):
     model_33 = sm.OLS(y_33, x33_ones)
     results_33 = model_33.fit()
 
-    # Plot data and fit
-    plt.plot(x31, results_31.fittedvalues) # Model 1
-    plt.scatter(x31, y_31, alpha=0.15)
-    plt.plot(x32, results_32.fittedvalues) # Model 2
-    plt.scatter(x32, y_32, alpha=0.15)
-    plt.plot(x33, results_33.fittedvalues) # Model 3
-    plt.scatter(x33, y_33, alpha=0.15)
-    plt.axvline(x=x_grid[cp31], alpha=0.25)
-    plt.axvline(x=x_grid[cp32], alpha=0.25)
-    plt.savefig("Optimal_"+countries[i] + "_" + "changepoint_" + str(cp31) + "," + str(cp32))
-    plt.show()
+    # # Plot data and fit
+    # plt.plot(x31, results_31.fittedvalues) # Model 1
+    # plt.scatter(x31, y_31, alpha=0.15)
+    # plt.plot(x32, results_32.fittedvalues) # Model 2
+    # plt.scatter(x32, y_32, alpha=0.15)
+    # plt.plot(x33, results_33.fittedvalues) # Model 3
+    # plt.scatter(x33, y_33, alpha=0.15)
+    # plt.axvline(x=x_grid[cp31], alpha=0.25)
+    # plt.axvline(x=x_grid[cp32], alpha=0.25)
+    # plt.xlabel("Time")
+    # plt.ylabel("Emissions")
+    # plt.savefig("Optimal_"+countries[i] + "_" + "changepoint_" + str(cp31) + "," + str(cp32))
+    # plt.show()
 
