@@ -13,7 +13,7 @@ path = '/Users/tassjames/Desktop/hydrology/data' # use your path
 all_files = glob.glob(path + "/*.csv")
 
 # Overlap grid
-data_per_segment = [128, 256, 512, 1024, 2048, 4096] # 128, 256, 512, 1024, 2048, 4096
+data_per_segment = [3500, 3750, 4000, 4250, 4500, 4750, 5000] # 128, 256, 512, 1024, 2048, 4096
 overlap_grid = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9] # 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9
 
 # Loop over data segment and overlap grid
@@ -100,7 +100,6 @@ for i in range(len(data_per_segment)):
             whittle_likelihood_totals.append([whittle_likelihood_sum, data_per_segment[i], overlap_grid[j]])
             print("Whittle Likelihood ", whittle_likelihood_sum)
             parameters.append([data_per_segment[i], overlap_grid[j]])
-
 
 # Make list of lists an array
 whittle_likelihood_array = np.array(whittle_likelihood_totals)
