@@ -69,7 +69,7 @@ max_offset = 180
 
 # Set offset matrix
 offset_matrix = np.zeros((len(time_series_list),len(time_series_list)))
-# offset_matrix = np.zeros((25,25))
+l1_matrix = np.zeros((len(time_series_list),len(time_series_list)))
 
 # Time series i and j
 for i in range(len(time_series_list)):
@@ -93,17 +93,29 @@ for i in range(len(time_series_list)):
         # Combine the L^1 product scores
         l1_scores = l1_scores_i
         idx = np.argmin(l1_scores)
-        offsets_list.append(idx)
-
-        # Append difference to offset matrix
-        offset_matrix[i,j] = idx
+        if i < j:
+            offsets_list.append(idx)
+        else:
+            print("i>j")
+        # L^1 distance
+        l1_matrix[i,j] = np.sum(np.abs(time_series_list[i]-time_series_list[j]))
     print("Iteration ", i)
 
 # Plot heatmap
-plt.matshow(offset_matrix)
-plt.title("Offset matrix")
-plt.savefig("Offset_matrix")
+plt.matshow(l1_matrix)
+plt.title("L^1 matrix")
+plt.savefig("L1_time_matrix")
 plt.show()
 
+# Compute Mean and diagonal
 print("Mean offset matrix", np.mean(offset_matrix))
 print("Diagonal offset matrix", np.diag(offset_matrix))
+
+# Plot histogram of offsets
+plt.hist(np.array(offset_matrix).flatten(), bins=100)
+plt.xlabel("Offsets")
+plt.ylabel("Frequency")
+plt.show()
+
+# Plot dendrograms
+dendrogram_plot_labels(offset_matrix, "_time_offsets_", "_L1_", labels=labels)
