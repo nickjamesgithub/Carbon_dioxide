@@ -30,6 +30,7 @@ for filename in all_files:
 
     # Get filename
     file_id = filename.rsplit('/', 1)[-1]
+    mod_file_id = file_id[:len(file_id)-4]
 
     df = pd.read_csv(filename, index_col=None, header=0, skiprows=26)
     df_slice = df[["Date", "Flow (ML)", "Bureau QCode"]]
@@ -58,6 +59,15 @@ for filename in all_files:
         flow_ts = df_date_slice[["Date", "Flow (ML)"]]  # Date and Flow in new date range
         flow_ts = np.array(flow_ts["Flow (ML)"])
         flow_ts = flow_ts # Normalise by mean of time series
+
+        if make_plots:
+            # Time Series
+            plt.plot(df_date_slice["Date"], flow_ts)
+            plt.title(mod_file_id+"_time_series")
+            plt.xlabel("Time")
+            plt.ylabel("Flow")
+            plt.savefig(mod_file_id + "_time_series")
+            plt.show()
 
         # Frequency Domain
         freqs = fftfreq(len(flow_ts), d=(1 - 0) / (2 * np.pi))  # Generate Frequency Grid
@@ -90,8 +100,12 @@ for filename in all_files:
         log_periodogram_sliced = flow_periodogram_mean_adj[idx]
 
         if make_plots:
-            plt.plot(np.linspace(0,0.5,len(log_periodogram_sliced)), log_periodogram_sliced)
-            plt.plot(np.linspace(0,0.5,len(flow_periodogram_mean_adj)),flow_periodogram_mean_adj, alpha=0.2)
+            plt.plot(np.linspace(0,0.5,len(log_periodogram_sliced)), log_periodogram_sliced, alpha=0.5, label="Welch's method")
+            plt.plot(np.linspace(0,0.5,len(flow_periodogram_mean_adj)),flow_periodogram_mean_adj, alpha=0.1, label="Periodogram")
+            plt.xlabel("Time")
+            plt.ylabel("Log power")
+            plt.title(mod_file_id+"_Power_Spectrum")
+            plt.savefig(mod_file_id+"_Spectrum")
             plt.show()
 
         # Iteration
@@ -140,9 +154,11 @@ dendrogram_plot_labels(amplitude_distance_matrix, "_amplitude_", "_L1_", labels=
 plt.hist(frequency_list, bins=60)
 plt.xlabel("Dominant frequency")
 plt.ylabel("Frequency")
+plt.savefig("Distribution_frequency")
 plt.show()
 
 plt.hist(amplitude_list, bins=60)
 plt.xlabel("Maximum amplitude")
 plt.ylabel("Frequency")
+plt.savefig("Distribution_amplitude")
 plt.show()

@@ -495,3 +495,21 @@ def complex_power_spectrum(sigma_squared, phi1, phi2, phi3, phi4, freqs):
     num = sigma_squared
     denom = np.abs(1-((phi1*np.exp(2*np.pi*freqs*1j*1)) + (phi2*np.exp(2*np.pi*freqs*1j*2)) + (phi3*np.exp(2*np.pi*freqs*1j*3)) + (phi4*np.exp(2*np.pi*freqs*1j*4))))**2
     return num/denom
+
+from math import radians, cos, sin, asin, sqrt
+
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+    """
+    # convert decimal degrees to radians
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 3956  # Radius of earth in kilometers. Use 3956 for miles
+    return c * r
