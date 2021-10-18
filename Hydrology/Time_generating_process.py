@@ -89,10 +89,11 @@ def ts_offset(ts_i, process_c, max_offset):
     return argmin_l1
 
 # Time series i and j
-process_c = time_series_list[0][:-max_offset]
-process = time_series_list[0]
+process_c = time_series_list[0][:-max_offset] * 1/len(time_series_list)
+process = time_series_list[0] * 1/len(time_series_list)
 counter = 2
 offsets = []
+maximums = []
 # Loop over all the time series
 for i in range(1, len(time_series_list)):
 
@@ -105,7 +106,8 @@ for i in range(1, len(time_series_list)):
 
     # Slice based on argmin
     ts_optimal = ts_i[argmin:(len(ts_i)-max_offset+argmin)]
-    process_c = (process_c + ts_optimal) * 1/counter
+    ts_optimal_scaled = ts_optimal * (1/len(time_series_list))
+    process_c += ts_optimal_scaled
     counter += 1
     print("Iteration", i)
     print(argmin)
@@ -116,11 +118,17 @@ plt.title("Governing Hydrological Process")
 plt.savefig("Hydrological_process")
 plt.show()
 
-# Plot periodogram
+# Generate centred process in time
 process_c_centred = process_c - np.mean(process_c)
-log_periodogram = (np.log(np.abs(fft(fftshift(process_c_centred )))**2))[1:len(process_c)//2]
-freqs = np.linspace(0,0.5, len(log_periodogram))
-plt.plot(freqs, log_periodogram)
+
+# Compute Power spectral density
+f, Pxx_density = welch(process_c_centred, fs=1, window='hann', nperseg=data_per_segment,
+                       noverlap=overlap_grid * data_per_segment, scaling='density')
+log_spectrum = np.log(Pxx_density)
+print("Spectrum length", len(log_spectrum))
+
+# Plot power spectral density
+plt.plot(f, log_spectrum)
 plt.xlabel("Frequency")
 plt.ylabel("Log Power")
 plt.title("Hydrological process PSD")
@@ -138,8 +146,9 @@ plt.show()
 # Write script for core process to hydrology folder
 process_df = pd.DataFrame(process_c) # Core process time series
 process_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/time_series_core.csv")
-log_periodogram_df = pd.DataFrame(log_periodogram) # Core Log periodogram
-log_periodogram_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/log_periodogram_core.csv")
+
+log_spectrum_df = pd.DataFrame(Pxx_density) # Core Log PSD
+log_spectrum_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/PSD_core.csv")
 
 
 

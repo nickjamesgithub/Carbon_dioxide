@@ -29,10 +29,14 @@ overlap_grid = 0.4
 time_series_list = []
 omitted_codes = []
 labels = []
+
 # station, Lat and long
 station_id_list = []
 latitude_list = []
 longitude_list = []
+
+# Power spectral density
+spectral_list = []
 
 # Loop over filenames
 for filename in all_files:
@@ -79,8 +83,18 @@ for filename in all_files:
         flow_ts = df_date_slice[["Date", "Flow (ML)"]]  # Date and Flow in new date range
         flow_ts = np.array(flow_ts["Flow (ML)"])
 
+        # Truncate flow_ts by one year to match with core process
+        flow_truncate = flow_ts[365:]
         # Append to time series
-        time_series_list.append(flow_ts)
+        time_series_list.append(flow_truncate)
+
+        # Compute Power spectral density
+        flow_ts_normalised = flow_ts - np.mean(flow_ts)
+        f, Pxx_density = welch(flow_ts_normalised, fs=1, window='hann', nperseg=data_per_segment,
+                               noverlap = overlap_grid * data_per_segment, scaling='density')
+        log_spectrum = np.log(Pxx_density)
+        print("Spectrum length", len(log_spectrum))
+        spectral_list.append(log_spectrum[:-1])
 
         # Iteration
         print("Run over files", filename)
@@ -89,7 +103,7 @@ for filename in all_files:
 core_process_time = pd.read_csv("/Users/tassjames/Desktop/hydrology/Process/time_series_core.csv")
 core_process_time = core_process_time.iloc[1:,1]
 
-core_process_spectrum = pd.read_csv("/Users/tassjames/Desktop/hydrology/Process/time_series_core.csv")
+core_process_spectrum = pd.read_csv("/Users/tassjames/Desktop/hydrology/Process/log_PSD_core.csv")
 core_process_spectrum = core_process_spectrum.iloc[1:,1]
 
 # Compute latitude and longitude median
@@ -97,18 +111,66 @@ latitude_median = np.median(latitude_list)
 longitude_median = np.median(longitude_list)
 
 # Compute distance between core time series and all individual time series
-dtw_vector_time = []
-geographic_distance = []
+dtw_vector_time = [] # DTW distance between two time series
+geographic_distance = [] # Haversine geographic distance
+l1_distance_spectral = [] # L1 distance between 2 spectra
 
-# Time series i and j
+# Consistency between spatial distance and time distance
 for i in range(len(time_series_list)):
     # Compute distance in time
-    time_distance = dtw(time_series_list[i][365:], core_process_time, method='itakura')
+    time_distance = dtw(time_series_list[i], core_process_time, method='itakura')
     dtw_vector_time.append(time_distance)
+
     # Compute distance in space
     geo_distance = haversine(longitude_median, latitude_median, longitude_list[i], latitude_list[i])
     geographic_distance.append(geo_distance)
+
+    # Normalise both log spectra to ameliorate amplitude effects
+    core_spectrum_norm = core_process_spectrum / np.sum(np.abs(core_process_spectrum))
+    spectral_indiv_norm = spectral_list[i] / np.sum(np.abs(spectral_list[i]))
+
+    # Compute distance in frequency space
+    l1_spectrum = np.sum(np.abs(core_spectrum_norm - spectral_indiv_norm))
+    l1_distance_spectral.append(l1_spectrum)
+
     # Print iteration, time and geographic distance
     print("Iteration", i)
     print("Time distance", time_distance)
     print("Geographic distance", geo_distance)
+    print("Spectral L^1 distance", l1_spectrum)
+
+# Distribution of distances
+plt.hist(dtw_vector_time, bins=60)
+plt.title("DTW distance distribution")
+plt.show()
+
+plt.hist(geographic_distance, bins=60)
+plt.title("Geodesic distance distribution")
+plt.show()
+
+plt.hist(l1_distance_spectral, bins=60)
+plt.title("Spectral distance distribution")
+plt.show()
+
+# Convert to affinity vectors
+affinity_time = 1 - dtw_vector_time/np.max(dtw_vector_time)
+affinity_psd = 1 - l1_distance_spectral/np.max(l1_distance_spectral)
+affinity_spatial = 1 - geographic_distance/np.max(geographic_distance)
+
+# Combine vectors
+affinity_vectors = np.concatenate((affinity_time, affinity_psd, affinity_spatial))
+affinity_matrix = np.reshape(affinity_vectors, (len(affinity_vectors)//3,3))
+
+# Plot affinity matrix (Nx3)
+fig, ax = plt.subplots()
+plt.matshow(affinity_matrix)
+fig.colorbar()
+plt.show()
+
+# Compute distance between vectors in affinity
+time_spatial_inc = np.sum(np.abs(affinity_time - affinity_spatial))
+frequency_spatial_inc = np.sum(np.abs(affinity_psd - affinity_spatial))
+
+# Print
+print("Time/spatial inconsistency", time_spatial_inc)
+print("Spectral/spatial inconsistency", frequency_spatial_inc)
