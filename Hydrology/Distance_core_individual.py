@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 import glob
 from scipy.signal import welch
 import datetime
-from scipy.fftpack import fft, fftshift
-from Utils import dendrogram_plot_labels
-from scipy.spatial.distance import euclidean
-from fastdtw import fastdtw
 from pyts.metrics import dtw
 from Utilities import haversine
 

@@ -96,6 +96,10 @@ for filename in all_files:
         print("Spectrum length", len(log_spectrum))
         spectral_list.append(log_spectrum[:-1])
 
+# Write list of time series out to folder
+time_series_df = pd.DataFrame(time_series_list)
+time_series_df.to_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_df.csv")
+
 # Plot distance between all time series
 norm_l1_distance_matrix = np.zeros((len(time_series_list), len(time_series_list)))
 spatial_distance_matrix = np.zeros((len(time_series_list), len(time_series_list)))
