@@ -5,7 +5,7 @@ import glob
 from scipy.signal import welch
 import datetime
 from scipy.fftpack import fft, fftshift
-from Utils import dendrogram_plot_labels
+from Utils import dendrogram_plot_labels, dendrogram_plot
 from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from pyts.metrics import dtw
@@ -74,8 +74,8 @@ for filename in all_files:
     # Lower bound and upper bound
     if min_ > lb or max_ < ub:
         # Code of omitted file
-        omitted_codes.append(file_id)
-        print("Omit ", file_id)
+        omitted_codes.append(station_id)
+        print("Omit ", station_id)
     else:
         labels.append(file_id)
         mask = (df_slice['Date'] >= '1980-01-01') & (df_slice['Date'] <= '2019-01-01')
@@ -95,6 +95,10 @@ for filename in all_files:
         log_spectrum = np.log(Pxx_density)
         print("Spectrum length", len(log_spectrum))
         spectral_list.append(log_spectrum[:-1])
+
+# Omitted Codes dataframe
+omitted_codes_df = pd.DataFrame(omitted_codes)
+omitted_codes_df.to_csv("/Users/tassjames/Desktop/Hydrology/omitted_codes/omitted_codes.csv")
 
 # Write list of time series out to folder
 time_series_df = pd.DataFrame(time_series_list)
@@ -139,7 +143,16 @@ plt.matshow(spectral_distance_matrix)
 plt.savefig("Distance_matrix_spectral")
 plt.show()
 
-# Dendrogram
-dendrogram_plot_labels(norm_l1_distance_matrix, "_L1_", "_Time_", labels=labels)
-dendrogram_plot_labels(spatial_distance_matrix, "_Haversine_", "_Spatial_", labels=labels)
-dendrogram_plot_labels(spectral_distance_matrix, "_L1_", "_Spectral_", labels=labels)
+# Affinity matrix
+affinity_temporal = 1 - norm_l1_distance_matrix/np.max(norm_l1_distance_matrix)
+affinity_spatial = 1 - spatial_distance_matrix/np.max(spatial_distance_matrix)
+affinity_spectral = 1 - spectral_distance_matrix/np.max(spectral_distance_matrix)
+
+# Affinity Dendrograms
+dendrogram_plot(affinity_temporal, "_L1_", "_Time_", labels=labels)
+dendrogram_plot(affinity_spatial, "_Haversine_", "_Spatial_", labels=labels)
+dendrogram_plot(affinity_spectral, "_L1_", "_Spectral_", labels=labels)
+
+# Average value in each matrix
+print("Average mean temporal", np.sum(np.abs(affinity_temporal))/len(affinity_temporal)**2)
+print("Average mean spectral", np.sum(np.abs(affinity_spectral))/len(affinity_temporal)**2)

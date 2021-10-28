@@ -26,6 +26,19 @@ all_files = glob.glob(path + "/*.csv")
 # HR station details
 hr_station_details = pd.read_csv("/Users/tassjames/Desktop/hydrology/hrs_station_details.csv",
                                  index_col=None, header=0, skiprows=11)
+# # import omitted codes csv
+# omitted_codes = pd.read_csv("/Users/tassjames/Desktop/hydrology/omitted_codes/omitted_codes.csv")
+# omitted_codes_slice = omitted_codes.iloc[1:,1:]
+#
+# block = pd.to_numeric(hr_station_details['AWRC Station Number'])
+# test = hr_station_details.loc[~((hr_station_details['AWRC Station Number'].isin(omitted_codes_slice))&(hr_station_details['AWRC Station Number'].isin(omitted_codes_slice))),:]
+#
+# # Conditional Drop
+# conditional_drop = hr_station_details['AWRC Station Number'].isin(omitted_codes_slice)
+# hr_station_details.drop(hr_station_details[conditional_drop].index, inplace = True)
+
+# Updated HR station details post drop
+hr_station_details_drop = hr_station_details
 X = hr_station_details.loc[:,['Latitude','Longitude']]
 
 # Find optimal number of clusters
@@ -40,6 +53,7 @@ plt.plot(K_clusters, score)
 plt.xlabel('Number of Clusters')
 plt.ylabel('Score')
 plt.title('Elbow Curve - Unweighted K-Means')
+plt.savefig("Spatial_elbow")
 plt.show()
 
 # k means clustering
@@ -55,6 +69,6 @@ hr_station_details.plot(x="Longitude", y="Latitude", kind="scatter",
         title=f"Stations in Australia", c="cluster_label",
         ax=ax, colormap = 'viridis')# add grid
 ax.grid(b=True, alpha=0.5)
-plt.savefig("Hydrology_stations_plot")
+plt.savefig("Spatial_hydrology_stations_plot")
 plt.show()
 
