@@ -155,4 +155,4 @@ dendrogram_plot(affinity_spectral, "_L1_", "_Spectral_", labels=labels)
 
 # Average value in each matrix
 print("Average mean temporal", np.sum(np.abs(affinity_temporal))/len(affinity_temporal)**2)
-print("Average mean spectral", np.sum(np.abs(affinity_spectral))/len(affinity_temporal)**2)
+print("Average mean spectral", np.sum(np.abs(affinity_spectral))/len(affinity_spectral)**2)

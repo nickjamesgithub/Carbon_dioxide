@@ -172,7 +172,7 @@ plt.show()
 
 # Write out optimal time series
 optimal_ts_df = pd.DataFrame(optimal_ts_list)
-optimal_ts_df.write_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_aligned_df.csv")
+optimal_ts_df.to_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_aligned_df.csv")
 
 # Mean process and optimal process
 mean_process_init_df = pd.DataFrame(mean_process_init) # Mean process
