@@ -11,7 +11,7 @@ data = "aligned" # raw / aligned
 
 # Import data
 if data == "aligned":
-    hydrology = pd.read_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_aligned_df.csv")
+    hydrology = pd.read_csv("/Users/tassjames/Desktop/hydrology/Process/hydrology_ts_aligned_df.csv")
     hydrology_slice = hydrology.iloc[1:,1:].transpose()
     # hydrology_returns = np.log(np.nan_to_num((hydrology_slice).diff())) # Compute log returns of hydrology time series
 
@@ -40,10 +40,13 @@ if data == "aligned":
 
     # Normalized eigenvalue 1
     # Date axis
-    plt.plot(np.linspace(0,len(corr_1), len(corr_1)), corr_1)
+    date_index_array = pd.date_range("1980-01-01", "2019-01-01", len(corr_1))
+    plt.plot(date_index_array, corr_1)
     plt.ylim(0,1)
-    plt.title("Hydrology Process normalised eigenvalue 1")
-    plt.savefig("Hydrology_Process_eigenvalue_1_diff_aligned")
+    plt.xlabel("Time")
+    plt.ylabel("Explanatory variance")
+    plt.title("Normalized first eigenvalue")
+    plt.savefig("Eigenvalue_1_aligned")
     plt.show()
 
     # Convert into an array
@@ -70,7 +73,7 @@ if data == "aligned":
 
 # Import data
 if data == "raw":
-    hydrology = pd.read_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_df.csv")
+    hydrology = pd.read_csv("/Users/tassjames/Desktop/hydrology/Process/hydrology_ts_df.csv")
     hydrology_slice = hydrology.iloc[1:,1:].transpose()
     # hydrology_returns = np.log(np.nan_to_num((hydrology_slice).diff())) # Compute log returns of hydrology time series
 
@@ -99,10 +102,13 @@ if data == "raw":
 
     # Normalized eigenvalue 1
     # Date axis
-    plt.plot(np.linspace(0,len(corr_1), len(corr_1)), corr_1)
+    date_index_array = pd.date_range("1980-01-01", "2019-01-01", len(corr_1))
+    plt.plot(date_index_array, corr_1)
     plt.ylim(0,1)
-    plt.title("Hydrology Process normalised eigenvalue 1")
-    plt.savefig("Hydrology_Process_eigenvalue_1_diff_raw")
+    plt.title("Normalized first eigenvalue")
+    plt.xlabel("Time")
+    plt.ylabel("Explanatory variance")
+    plt.savefig("Eigenvalue_1_raw")
     plt.show()
 
     # Convert into an array

@@ -4,11 +4,6 @@ import matplotlib.pyplot as plt
 import glob
 from scipy.signal import welch
 import datetime
-from scipy.fftpack import fft, fftshift
-from Utils import dendrogram_plot_labels
-from scipy.spatial.distance import euclidean
-from fastdtw import fastdtw
-from pyts.metrics import dtw
 
 make_plots = False
 
@@ -163,23 +158,29 @@ optimal_ts_array_2 = np.array(optimal_ts_list_2)
 optimal_ts_2 = np.sum(optimal_ts_array_2, axis=0)
 
 # Processes
-plt.plot(mean_process_init, alpha=0.25, label="Initial (mean process)")
-plt.plot(optimal_ts_1, alpha=0.25, label="Post-alignment-1")
-plt.plot(optimal_ts_c, alpha=0.25, label="Post-alignment-2")
+date_index_array_1 = pd.date_range("1980-01-01", "2019-01-01", len(mean_process_init))
+date_index_array_2 = cum_cases_date = pd.date_range("1980-01-01", "2018-01-01", len(optimal_ts_c))
+plt.plot(date_index_array_1, mean_process_init, alpha=0.25, label="Initial (mean) process")
+plt.plot(date_index_array_2, optimal_ts_c, alpha=0.25, label="Post-alignment algorithm")
 plt.legend()
+plt.ylabel("Streamflow")
+plt.xlabel("Time")
 plt.savefig("Alignment_procedure_L2")
 plt.show()
 
 # Write out optimal time series
-optimal_ts_df = pd.DataFrame(optimal_ts_list)
-optimal_ts_df.to_csv("/Users/tassjames/Desktop/hydrology/hydrology_ts_aligned_df.csv")
+ts_df = pd.DataFrame(time_series_array)
+ts_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/hydrology_ts_df.csv")
+
+optimal_ts_aligned_df = pd.DataFrame(optimal_ts_list)
+optimal_ts_aligned_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/hydrology_ts_aligned_df.csv")
 
 # Mean process and optimal process
 mean_process_init_df = pd.DataFrame(mean_process_init) # Mean process
-mean_process_init_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/mean_process_init.csv")
+mean_process_init_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/Initial_process.csv")
 
 optimal_ts_c_df = pd.DataFrame(optimal_ts_c) # Optimal process
-optimal_ts_c_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/optimal_process.csv")
+optimal_ts_c_df.to_csv("/Users/tassjames/Desktop/hydrology/Process/Aligned_process.csv")
 
 # Generate centred process in time
 process_c_centred = optimal_ts_c - np.mean(optimal_ts_c)
