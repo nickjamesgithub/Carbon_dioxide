@@ -36,7 +36,8 @@ for i in range(len(cities)):
 
     # Plot the surface.
     surf = ax.plot_surface(X, Y, gt_spectrum, cmap=cm.viridis, linewidth=0, antialiased=False)
-    plt.xlabel("Frequency")
-    plt.ylabel("Time")
+    ax.set_xlabel("Frequency")
+    ax.set_ylabel("Time")
+    ax.set_zlabel("Log PSD")
     plt.savefig(labels[i]+"_3d_surface")
     plt.show()
