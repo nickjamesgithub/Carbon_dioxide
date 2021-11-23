@@ -11,6 +11,8 @@ make_plots = False
 path = '/Users/tassjames/Desktop/hydrology/data' # use your path
 all_files = glob.glob(path + "/*.csv")
 
+hr_details_df = pd.read_csv("/Users/tassjames/Desktop/hydrology/hrs_station_details_read.csv")
+
 # Overlap grid
 data_per_segment = 3750
 overlap_grid = 0.4
@@ -96,6 +98,7 @@ offsets = []
 optimal_ts_list = []
 truncated_end = []
 argmin_1_list = []
+location_offset_list = []
 # Loop over all the time series - STEP 1
 for i in range(1, len(time_series_list)):
 
@@ -106,6 +109,9 @@ for i in range(1, len(time_series_list)):
     argmin = ts_offset(ts_i, mean_process_init, max_offset)
     argmin_1_list.append(argmin)
     offsets.append(argmin) # Append minimum to offsets list
+    if argmin >= 0:
+        state = np.array(hr_details_df.loc[hr_details_df['AWRC Station Number'] == labels[i][:-4], 'Jurisdiction'])
+        location_offset_list.append([labels[i][:-4], argmin, state]) # Append spatial coordinates of offsets
 
     # Slice based on argmin
     ts_optimal = ts_i[argmin:(len(ts_i)-max_offset+argmin)]
@@ -115,6 +121,9 @@ for i in range(1, len(time_series_list)):
     counter += 1
     print("Iteration", i)
     print(argmin)
+
+location_df = pd.DataFrame(location_offset_list)
+location_df.to_csv("/Users/tassjames/Desktop/hydrology/offset_location/location_df_0.csv")
 
 # Make optimal time series array and total (summing over rows)
 optimal_ts_array = np.array(optimal_ts_list)
