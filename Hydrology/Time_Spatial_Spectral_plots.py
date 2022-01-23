@@ -148,11 +148,13 @@ affinity_temporal = 1 - norm_l1_distance_matrix/np.max(norm_l1_distance_matrix)
 affinity_spatial = 1 - spatial_distance_matrix/np.max(spatial_distance_matrix)
 affinity_spectral = 1 - spectral_distance_matrix/np.max(spectral_distance_matrix)
 
-# Affinity Dendrograms
-dendrogram_plot(affinity_temporal, "_L1_", "_Time_", labels=labels)
-dendrogram_plot(affinity_spatial, "_Haversine_", "_Spatial_", labels=labels)
-dendrogram_plot(affinity_spectral, "_L1_", "_Spectral_", labels=labels)
+# # Affinity Dendrograms
+# dendrogram_plot(affinity_temporal, "_L1_", "_Time_", labels=labels)
+# dendrogram_plot(affinity_spatial, "_Haversine_", "_Spatial_", labels=labels)
+# dendrogram_plot(affinity_spectral, "_L1_", "_Spectral_", labels=labels)
 
 # Average value in each matrix
 print("Average mean temporal", np.sum(np.abs(affinity_temporal))/len(affinity_temporal)**2)
+print("Average mean temporal (above diagonal)", np.triu(np.abs(affinity_temporal)).sum() * (2/(len(affinity_temporal)*len(affinity_temporal)-1)))
 print("Average mean spectral", np.sum(np.abs(affinity_spectral))/len(affinity_spectral)**2)
+print("Average mean temporal (above diagonal)", np.triu(np.abs(affinity_spectral)).sum() * (2/(len(affinity_spectral)*len(affinity_spectral)-1)))
